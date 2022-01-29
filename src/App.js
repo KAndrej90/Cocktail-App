@@ -1,25 +1,45 @@
-import logo from './logo.svg';
 import './App.css';
+import {useState} from 'react';
+import Input from './Components/Input';
+import CocktailList from './Components/CocktailList';
+import SocialMedia from './Components/SocialMedia';
+
+
+
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  const [data, setData]= useState([]);
+
+  const getCocktail= (name)=>{
+    let url ='https://www.thecocktaildb.com/api/json/v1/1/search.php?s=';
+    let newCocktailName = name;
+    let urlKoktels = url + newCocktailName;
+    
+    fetch(urlKoktels)
+      .then(response => response.json())
+      .then(cocktailData => setData(cocktailData))
+  }
+
+  const removeCocktail =(id)=>{
+    const newCocktailList = data.drinks.filter(x => x.idDrink !== id);
+    setData({drinks:newCocktailList});    
+  }
+
+      return (
+    <>
+      <main>
+        <nav>
+          <div>
+          <h1>Search for your favorite cocktail</h1>
+          <Input newName={getCocktail} /> 
+          </div>
+          <SocialMedia/>
+        </nav>
+        <section className='listSection'>
+          <CocktailList cocktailsData={data.drinks} removeCocktail={(id)=> removeCocktail(id)}/>
+        </section> 
+      </main>
+      </>
   );
 }
-
 export default App;
